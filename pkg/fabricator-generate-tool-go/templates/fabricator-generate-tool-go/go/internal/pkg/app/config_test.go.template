@@ -1,0 +1,13 @@
+{{ CodeSectionFileHeader | ToGoComment }}
+package app_test
+
+/* This provides a sample setup for testing - Its also just enough to satisfy ginkgo's requirement to have at least one test in a module */
+
+import (
+	. "github.com/onsi/ginkgo/v2"
+	_ "github.com/onsi/gomega"
+)
+
+var _ = Describe("ConfigTest", func() {
+
+})

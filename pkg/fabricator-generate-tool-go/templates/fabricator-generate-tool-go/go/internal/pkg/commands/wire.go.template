@@ -1,0 +1,36 @@
+//go:build wireinject
+// +build wireinject
+// The build tag makes sure the stub is not built in the final build.
+{{ CodeSectionFileHeader | ToGoComment }}
+
+
+package commands
+
+import (
+// region CODE_REGION(COMMON_IMPORTS)
+	"github.com/google/wire"
+
+	"{{.GoModule}}/internal/pkg/commands/rootcmd"
+	"{{.GoModule}}/internal/pkg/commands/versioncmd"
+	{{ $save := . -}}
+	{{range $command :=.PluginComponent.Spec.Commands -}}
+	"{{$save.GoModule}}/internal/pkg/commands/{{$command.Name | ToGoPackageName}}cfg"
+	"{{$save.GoModule}}/internal/pkg/commands/{{$command.Name | ToGoPackageName}}cmd"
+    {{end -}}
+// endregion
+)
+
+// CommandsProviderSet is a provider set for building an application
+var CommandsProviderSet = wire.NewSet(
+// region CODE_REGION(COMMO_COMMANDS)
+	rootcmd.ProvideConfig,
+	rootcmd.NewStdIOStreams,
+	versioncmd.ProvideConfig,
+	{{ $save := . -}}
+	{{range $command :=.PluginComponent.Spec.Commands -}}
+	{{$command.Name | ToGoPackageName}}cfg.ConfigProviderSet,
+	{{$command.Name | ToGoPackageName}}cmd.ProvideRunFunc,
+    {{end -}}
+	ProvideCommandsRunFunc,
+// endregion
+)

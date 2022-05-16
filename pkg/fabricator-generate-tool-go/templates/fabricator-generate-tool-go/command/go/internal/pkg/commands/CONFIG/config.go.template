@@ -1,0 +1,60 @@
+!!pathreplace CONFIG {{.Command.Name}}cfg
+{{ CodeSectionFileHeader | ToGoComment }}
+package {{.Command.Name | ToGoPackageName}}cfg
+
+import (
+// region CODE_REGION(COMMON_IMPORTS)
+	"flag"
+
+	"github.com/go-logr/logr"
+	"github.com/peterbourgon/ff/v3"
+	"code.cestus.io/libs/fftoml/pkg/fftoml"
+
+	"{{.GoModule}}/internal/pkg/commands/rootcmd"
+//endregion
+
+)
+
+// region CODE_REGION(CONFIG)
+type Config struct {
+	RootConfig *rootcmd.Config
+	FS         *flag.FlagSet
+	Log        logr.Logger
+	IO         rootcmd.IOStreams
+	Options    []ff.Option
+{{range $flag :=.Command.Flags -}}
+    {{$flag.Name | ToGoName}} {{$flag.Type | ToLower}}
+{{end -}}
+	//endregion
+}
+
+// region CODE_REGION(COMMON_CONFIG)
+func ProvideConfig(rootConfig *rootcmd.Config,
+	log logr.Logger,
+	io rootcmd.IOStreams,
+	//endregion
+	// region CODE_REGION(COMMON_RET_CONFIG)
+) *Config {
+	cfg := Config{
+		RootConfig: rootConfig,
+		Log:        log,
+		IO:         io,
+		Options: []ff.Option{
+			ff.WithConfigFileParser(fftoml.New(fftoml.WithTableSkip("{{.Command.Name | ToLower}}")).Parse),
+			ff.WithEnvVarPrefix("{{.PluginComponent.Spec.ToolName | ToLower}}_{{.Command.Name | ToLower}}"),
+			ff.WithConfigFileVia(rootConfig.ConfigFile()),
+			ff.WithIgnoreUndefined(true),
+			ff.WithAllowMissingConfigFile(true),
+		},
+	}
+	cfg.FS = flag.NewFlagSet("{{.PluginComponent.Spec.ToolName | ToLower}} {{.Command.Name | ToLower}}", flag.ExitOnError)
+
+	{{range $flag :=.Command.Flags -}}
+		cfg.FS.{{$flag.Type | ToHumanNameTitle}}Var(&cfg.{{$flag.Name | ToGoName}}, "{{$flag.Name | ToVarName}}", {{$flag.Default}}, "{{$flag.Usage}}")
+	{{end -}}
+
+	//endregion
+
+	rootConfig.RegisterFlags(cfg.FS)
+	return &cfg
+}

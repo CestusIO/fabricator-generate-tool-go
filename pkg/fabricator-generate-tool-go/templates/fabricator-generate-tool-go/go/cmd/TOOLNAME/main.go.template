@@ -1,0 +1,64 @@
+!!pathreplace TOOLNAME {{.PluginComponent.Spec.ToolName}}
+{{ CodeSectionFileHeader | ToGoComment }}
+
+package main
+
+import (
+// region CODE_REGION(COMMON_IMPORTS)
+	"context"
+	"fmt"
+
+    "go.uber.org/zap"
+
+	"code.cestus.io/libs/buildinfo"
+	"code.cestus.io/libs/log"
+
+	"{{.GoModule}}/internal/pkg/app"
+
+	_ "{{.GoModule}}"
+//endregion
+)
+
+// region CODE_REGION(COMMON)
+
+// ZapDevelopmentConfigProvider is a development logger config
+func ZapDevelopmentConfigProvider(config *app.Config) zap.Config {
+	zconf := zap.Config{
+		Level:            zap.NewAtomicLevelAt(-3),
+		Development:      false,
+		Encoding:         "json",
+		EncoderConfig:    zap.NewProductionEncoderConfig(),
+		OutputPaths:      []string{"stderr"},
+		ErrorOutputPaths: []string{"stderr"},
+	}
+	var level log.Level
+	err := level.UnmarshalText([]byte(config.LogLevel))
+	if err == nil {
+		log.SetLevel(level, &zconf)
+	}
+	return zconf
+}
+
+// ProvideLogVersionString provides the build version for logs based on the buildinfo
+func ProvideLogVersionString(buildinfo buildinfo.BuildInfo) log.VersionString {
+	return log.VersionString(buildinfo.Version)
+}
+
+
+func main() {
+	commands, cleanup, err := InitializeCommandRunFunc()
+	if err != nil {
+		fmt.Println("Could not initialize commands: ", err)
+		return
+	}
+	defer cleanup()
+	commands()
+}
+
+//endregion
+
+// ProvideContext provides a base context for the application
+func ProvideContext() context.Context {
+	return context.Background()
+}
+

@@ -1,0 +1,37 @@
+!!pathreplace TOOLNAME {{.PluginComponent.Spec.ToolName}}
+//go:build wireinject
+// +build wireinject
+// The build tag makes sure the stub is not built in the final build.
+{{ CodeSectionFileHeader | ToGoComment }}
+
+
+package main
+
+import (
+// region CODE_REGION(COMMON_IMPORTS)
+	"github.com/google/wire"
+
+	"code.cestus.io/libs/buildinfo"
+	"code.cestus.io/libs/log"
+
+	"{{.GoModule}}/internal/pkg/commands"
+	"{{.GoModule}}/internal/pkg/config"
+// endregion
+)
+
+func InitializeCommandRunFunc() (commands.CommandRunFunc, func(), error) {
+	panic(
+		wire.Build(
+// region CODE_REGION(SERVICE)
+			commands.CommandsProviderSet,
+			buildinfo.BuildInfoProviderSet,
+			log.ZapperLogProviderSet,
+
+			ZapDevelopmentConfigProvider,
+			ProvideLogVersionString,
+			ProvideContext,
+			config.ConfigProviderSet,
+// endregion
+		),
+	)
+}

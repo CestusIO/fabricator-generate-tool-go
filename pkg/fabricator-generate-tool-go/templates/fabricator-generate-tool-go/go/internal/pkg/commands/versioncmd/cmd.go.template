@@ -1,0 +1,82 @@
+{{ CodeSectionFileHeader | ToGoComment }}
+package versioncmd
+
+import (
+// region CODE_REGION(COMMON_IMPORTS)
+	"context"
+	"flag"
+	"fmt"
+
+	"code.cestus.io/libs/buildinfo"
+	"github.com/go-logr/logr"
+	"github.com/peterbourgon/ff/v3"
+	"github.com/peterbourgon/ff/v3/ffcli"
+
+	"code.cestus.io/libs/fftoml/pkg/fftoml"
+
+	"{{.GoModule}}/internal/pkg/commands/rootcmd"
+//endregion
+)
+
+// region CODE_REGION(CONFIG)
+type Config struct {
+	rootConfig *rootcmd.Config
+	fs         *flag.FlagSet
+	log        logr.Logger
+	io         rootcmd.IOStreams
+	options    []ff.Option
+	buildinfo buildinfo.BuildInfo
+	//endregion
+}
+
+// region CODE_REGION(IMPLEMENT)
+
+// New returns a  ffcli.Command for the version subcommand.
+func New(conf *Config) *ffcli.Command {
+	return &ffcli.Command{
+		Name:       "version",
+		ShortUsage: "{{.PluginComponent.Spec.ToolName | ToLower}} version [flags] ",
+		ShortHelp:  "version",
+		FlagSet:    conf.fs,
+		Exec:       conf.CmdRunFunc(),
+	}
+}
+
+
+func ProvideConfig(rootConfig *rootcmd.Config,
+	log logr.Logger,
+	io rootcmd.IOStreams,
+	buildinfo buildinfo.BuildInfo,
+) *Config {
+	cfg := Config{
+		rootConfig: rootConfig,
+		log:        log,
+		io:         io,
+		options: []ff.Option{
+			ff.WithConfigFileParser(fftoml.New(fftoml.WithTableSkip("version")).Parse),
+			ff.WithEnvVarPrefix("{{.PluginComponent.Spec.ToolName | ToLower}}_version"),
+			ff.WithConfigFileVia(rootConfig.ConfigFile()),
+			ff.WithIgnoreUndefined(true),
+			ff.WithAllowMissingConfigFile(true),
+		},
+	}
+	cfg.fs = flag.NewFlagSet("{{.PluginComponent.Spec.ToolName | ToLower}} version", flag.ExitOnError)
+	cfg.buildinfo = buildinfo
+	rootConfig.RegisterFlags(cfg.fs)
+	return &cfg
+}
+
+func (conf *Config) CmdRunFunc() func(ctx context.Context, args []string) error {
+	return func(ctx context.Context, args []string) error {
+		fmt.Fprintf(conf.io.Out, "Name:       %s\n", conf.buildinfo.Name)
+		fmt.Fprintf(conf.io.Out, "Version:    %s\n", conf.buildinfo.Version)
+		fmt.Fprintf(conf.io.Out, "BuildDate:  %s\n", conf.buildinfo.BuildDate)
+		fmt.Fprintf(conf.io.Out, "Go-Version: %s\n", conf.buildinfo.GoVersion)
+		fmt.Fprintf(conf.io.Out, "Platform:   %s\n", conf.buildinfo.Platform)
+		fmt.Fprintf(conf.io.Out, "OS:         %s\n", conf.buildinfo.OS)
+
+		return nil
+	}
+}
+
+//endregion

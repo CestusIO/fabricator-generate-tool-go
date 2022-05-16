@@ -4,5 +4,7 @@
 package fabricatorgeneratetoolgo
 
 // region CODE_REGION(GEN)
-
+//go:generate fabricator generate go
+//go:generate fabricator generate project go
+//go:generate fabricator generate plugin go
 // endregion

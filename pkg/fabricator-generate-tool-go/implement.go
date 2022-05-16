@@ -36,6 +36,13 @@ func (p *plugin) GoModule() string {
 	return p.goModule
 }
 
+type CommandGenContext struct {
+	CodeGenerator   buildinfo.BuildInfo
+	GoModule        string
+	PluginComponent PluginComponent
+	Command         Command
+}
+
 // region CODE_REGION(GENERATION_CONTEXT)
 type GenerationContext struct {
 	CodeGenerator       buildinfo.BuildInfo
@@ -45,6 +52,7 @@ type GenerationContext struct {
 	ReplaceDependencies ReplaceDependencies
 	ToolDependencies    ToolDependencies
 	// endregion
+	CommandGenContexts []CommandGenContext
 }
 
 func (p *plugin) generationContexts(ctx context.Context, io fabricator.IOStreams) ([]GenerationContext, error) {
@@ -68,12 +76,51 @@ func (p *plugin) generationContexts(ctx context.Context, io fabricator.IOStreams
 		for k, o := range component.Spec.ToolDependency {
 			gencontext.ToolDependencies[k] = o
 		}
+		for _, c := range component.Spec.Commands {
+			cc := CommandGenContext{
+				CodeGenerator:   buildinfo.ProvideBuildInfo(),
+				GoModule:        p.GoModule(),
+				PluginComponent: component,
+				Command:         c,
+			}
+			gencontext.CommandGenContexts = append(gencontext.CommandGenContexts, cc)
+		}
 		contexts = append(contexts, gencontext)
 	}
 
 	return contexts, nil
 }
 
+func generateCommand(ctx context.Context, io fabricator.IOStreams, templates []templating.Template, root string, genCtx CommandGenContext) (err error) {
+	var genCmds [][]string
+	executor := helpers.NewExecutor(root, io)
+	generatedFiles, generationCommands, err := templating.Render(templates, root, genCtx, []string{}...)
+	if err != nil {
+		return fmt.Errorf("failed to generate template for %s: %s", PluginName, err)
+	}
+
+	for _, generatedFile := range generatedFiles {
+		generatedFile, _ = filepath.Rel(root, generatedFile)
+		fmt.Fprintf(io.Out, "%s\n", generatedFile)
+	}
+	genCmds = append(genCmds, generationCommands...)
+
+	// format files first so we dont run into generation failures
+	for _, generationCommand := range genCmds {
+		if generationCommand[0] == "goimports" {
+			if err = executor.Run(ctx, generationCommand[0], generationCommand[1:]...); err != nil {
+				return fmt.Errorf("failed to run template generation commands for project: %s", err)
+			}
+		}
+	}
+
+	for _, generationCommand := range genCmds {
+		if err = executor.Run(ctx, generationCommand[0], generationCommand[1:]...); err != nil {
+			return fmt.Errorf("failed to run template generation commands for project: %s", err)
+		}
+	}
+	return nil
+}
 func (p *plugin) Generate(ctx context.Context, io fabricator.IOStreams, patterns ...string) (err error) {
 	genCtxs, err := p.generationContexts(ctx, io)
 	if err != nil {
@@ -83,6 +130,21 @@ func (p *plugin) Generate(ctx context.Context, io fabricator.IOStreams, patterns
 	var genCmds [][]string
 	executor := helpers.NewExecutor(p.Root(), io)
 	for _, genCtx := range genCtxs {
+		// generate the commands first
+		for _, cc := range genCtx.CommandGenContexts {
+			cpack, err := p.packprovider.Provide(PluginName, "command/go")
+			if err != nil {
+				return fmt.Errorf("failed to load pack for commands: %s", err)
+			}
+			ctemplates, err := cpack.LoadTemplates()
+			if err != nil {
+				return fmt.Errorf("failed to load template for commands: %s", err)
+			}
+			err = generateCommand(ctx, io, ctemplates, p.Root(), cc)
+			if err != nil {
+				return fmt.Errorf("failed to generate template for command: %s: %s", cc.Command.Name, err)
+			}
+		}
 		templates, err := p.pack.LoadTemplates()
 		if err != nil {
 			return fmt.Errorf("failed to load template for plugin: %s", err)
@@ -155,6 +217,7 @@ func newPlugin(ctx context.Context, io fabricator.IOStreams, config PluginConfig
 	}
 
 	plugin.pack = pack
+
 	plugin.packprovider = packprovider
 
 	return plugin, err

@@ -1,0 +1,42 @@
+!!pathreplace COMMAND {{.Command.Name}}cmd
+{{ CodeSectionFileHeader | ToGoComment }}
+package {{.Command.Name | ToGoPackageName}}cmd
+
+import (
+// region CODE_REGION(COMMON_IMPORTS)
+	"context"
+	"github.com/peterbourgon/ff/v3/ffcli"
+
+	"code.cestus.io/libs/fftoml/pkg/fftoml"
+//endregion
+
+)
+
+// region CODE_REGION(IMPLEMENT)
+type RunFunc func(ctx context.Context, args []string) error
+
+// New returns a  ffcli.Command for the version subcommand.
+func New(conf *{{.Command.Name | ToGoPackageName}}cfg.Config, run RunFunc) *ffcli.Command {
+	return &ffcli.Command{
+		Name:       "{{.Command.Name | ToLower}}",
+		ShortUsage: "{{.PluginComponent.Spec.ToolName | ToLower}} {{.Command.Name | ToLower}} [flags] ",
+		ShortHelp:  "{{.Command.Name | ToLower}}",
+		FlagSet:    conf.FS,
+		Exec:       run,
+		Options:    conf.Options,
+//endregion
+	}
+}
+
+
+// region CODE_REGION(COMMON_RUNFUNC)
+func ProvideRunFunc(
+	conf *{{.Command.Name | ToGoPackageName}}cfg.Config,
+//endregion
+// region CODE_REGION(COMMON_RUNFUNCPART2)
+) RunFunc {
+	return func(ctx context.Context, args []string) error {
+		//endregion
+		return nil
+	}
+}

@@ -1,0 +1,4 @@
+!!pathreplace DEVCONTAINER .devcontainer
+{{ CodeSectionFileHeader | ToYAMLComment }}
+[app]
+    loglevel = "Debug2"
