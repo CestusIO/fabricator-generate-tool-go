@@ -32,13 +32,25 @@ type ReplaceDependency struct {
 	With string `yaml:"with" json:"with"`
 }
 
+type Flag struct {
+	Name    string `yaml:"name" json:"name"`
+	Type    string `yaml:"type" json:"type"`
+	Default string `yaml:"default" json:"default"`
+	Usage   string `yaml:"usage" json:"usage"`
+}
+type Command struct {
+	Name  string `yaml:"name" json:"name"`
+	Flags []Flag `yaml:"flags" json:"flags"`
+}
+
 // Spec contains the specification for the plugin
 type Spec struct {
 	PinDependency     PinDependencies     `yaml:"pinDependency,omitempty" json:"pinDependency,omitempty"`
 	ReplaceDependency ReplaceDependencies `yaml:"replaceDependency,omitempty" json:"replaceDependency,omitempty"`
 	ToolDependency    ToolDependencies    `yaml:"toolDependency,omitempty" json:"toolDependency,omitempty"`
 
-	ExampleValue string `yaml:"exampleValue" json:"exampleValue"`
+	ToolName string    `yaml:"toolName" json:"toolName"`
+	Commands []Command `yaml:"commands" json:"commands"`
 }
 
 // region CODE_REGION(PLUGIN_COMPONENT)

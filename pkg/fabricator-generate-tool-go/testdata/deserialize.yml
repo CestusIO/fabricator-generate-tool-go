@@ -1,19 +1,56 @@
 apiVersion: fabricator.cestus.io/v1alpha1
 kind: Config
 components:
-- name: "fabricator-generate-tool-go"
-  generator: fabricator-generate-tool-go
-  spec:
-    pinDependency: 
-#      "github.com/test":
-#        name: "github.com/test"
-#        version: "v1.0.0"
-    replaceDependency:
-#      "github.com/test":
-#        name: "github.com/test"
-#        with: "github.com/test@v1.2.4"
-    toolDependency:
-#        "github.com/test":
-#         name: "github.com/test"
-## Dependencies cannot contain values because tests would inject them into the go.mod and go.sum files as real dependencies
-
+  - name: "fabricator-generate-tool-go"
+    generator: fabricator-generate-tool-go
+    spec:
+      pinDependency:
+      #      "github.com/test":
+      #        name: "github.com/test"
+      #        version: "v1.0.0"
+      replaceDependency:
+      #      "github.com/test":
+      #        name: "github.com/test"
+      #        with: "github.com/test@v1.2.4"
+      toolDependency:
+      #        "github.com/test":
+      #         name: "github.com/test"
+      ## Dependencies cannot contain values because tests would inject them into the go.mod and go.sum files as real dependencies
+      toolName: wombat
+      commands:
+        - name: test
+          flags:
+            - name: all
+              type: bool
+              default: false
+              usage: set to true
+            - name: num32
+              type: int
+              default: -1
+              usage: int32 value
+            - name: num64
+              type: int64
+              default: -1
+              usage: int64 value
+            - name: unum32
+              type: uint
+              default: 1
+              usage: uint32 value
+            - name: unum64
+              type: uint64
+              default: 1
+              usage: uint64 value
+            - name: str
+              type: string
+              default: '"default string"'
+              usage: a string
+            - name: fl
+              type: float64
+              default: 1.02
+              usage: float64 value
+        - name: ls
+          flags:
+            - name: all
+              type: bool
+              default: false
+              usage: set to true

@@ -1,0 +1,18 @@
+//go:build tools
+// +build tools
+
+{{ CodeSectionFileHeader | ToGoComment }}
+
+package tools
+
+// region CODE_REGION(TOOL_DEPENDENCY)
+
+import (
+	_ "github.com/google/wire"
+
+	_ "github.com/google/wire/cmd/wire"
+
+	_ "github.com/onsi/ginkgo/v2/ginkgo"
+)
+
+// endregion

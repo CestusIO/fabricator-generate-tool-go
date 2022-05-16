@@ -1,0 +1,78 @@
+{{ CodeSectionFileHeader | ToGoComment }}
+package commands
+
+import (
+	// region CODE_REGION(COMMON_IMPORT)
+	"context"
+	"fmt"
+	"os"
+
+	"code.cestus.io/libs/buildinfo"
+	"github.com/go-logr/logr"
+	"github.com/peterbourgon/ff/v3/ffcli"
+	"go.uber.org/zap"
+
+	"{{.GoModule}}/internal/pkg/app"
+	"{{.GoModule}}/internal/pkg/commands/rootcmd"
+	"{{.GoModule}}/internal/pkg/commands/versioncmd"
+	{{ $save := . -}}
+	{{range $command :=.PluginComponent.Spec.Commands -}}
+	"{{$save.GoModule}}/internal/pkg/commands/{{$command.Name | ToGoPackageName}}cmd"
+	"{{$save.GoModule}}/internal/pkg/commands/{{$command.Name | ToGoPackageName}}cfg"
+    {{end -}}
+	//endregion
+)
+
+// region CODE_REGION(COMMON_APPLICATIONRUN_FUNC)
+// CommandRunFunc is a plain function that runs an command and returns an error
+type CommandRunFunc func() error
+
+// ProvideCommandsRunFunc creates an CommandRunFunc
+func ProvideCommandsRunFunc(log logr.Logger,
+	config *app.Config,
+	logConfig zap.Config,
+	buildinfo buildinfo.BuildInfo,
+	ctx context.Context,
+	rootconfig *rootcmd.Config,
+	versioncfg *versioncmd.Config,
+	{{ $save := . -}}
+	{{range $command :=.PluginComponent.Spec.Commands -}}
+	{{$command.Name | ToVarName}}cfg *{{$command.Name | ToVarName}}cfg.Config,
+	{{$command.Name | ToVarName}}run {{$command.Name | ToVarName}}cmd.RunFunc,
+    {{end -}}
+	// endregion
+
+	// region CODE_REGION(COMMON_APPLICATION)
+) CommandRunFunc {
+	return func() error {
+		var (
+			rootCommand = rootcmd.New(rootconfig)
+			versionCommand = versioncmd.New(versioncfg)
+	{{ $save := . -}}
+	{{range $command :=.PluginComponent.Spec.Commands -}}
+	{{$command.Name | ToVarName}}Command ={{$command.Name | ToVarName}}cmd.New({{$command.Name | ToVarName}}cfg, {{$command.Name | ToVarName}}run)
+    {{end -}}
+		)
+		//endregion
+	// region CODE_REGION(COMMON_REGISTER)
+		rootCommand.Subcommands = []*ffcli.Command{
+			versionCommand,
+	{{ $save := . -}}
+	{{range $command :=.PluginComponent.Spec.Commands -}}
+	{{$command.Name | ToVarName}}Command,
+    {{end -}}
+//endregion
+		}
+	// region CODE_REGION(COMMON_RUN)
+		if err := rootCommand.Parse(os.Args[1:]); err != nil {
+			fmt.Fprintf(os.Stderr, "error during Parse: %v\n", err)
+			return err
+		}
+		if err := rootCommand.Run(context.Background()); err != nil {
+			fmt.Fprintf(os.Stderr, "%v\n", err)
+			return err
+		}
+//endregion
+		return nil
+	}
+}

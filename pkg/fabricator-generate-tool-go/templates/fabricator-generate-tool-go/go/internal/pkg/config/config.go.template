@@ -1,0 +1,48 @@
+{{ CodeSectionFileHeader | ToGoComment }}
+
+package config
+
+import (
+// region CODE_REGION(COMMON_IMPORT)
+	"flag"
+	"os"
+
+	"github.com/peterbourgon/ff/v3"
+
+	"code.cestus.io/libs/fftoml/pkg/fftoml"
+
+	"{{.GoModule}}/internal/pkg/app"
+//endregion
+)
+
+// region CODE_REGION(COMMON_CONFIG)
+type Config struct {
+	App *app.Config
+	// endregion
+}
+
+// region CODE_REGION(COMMON_PROVIDER)
+
+//ProvideFlagSet provides a flag set
+func ProvideFlagSet() *flag.FlagSet {
+	return flag.NewFlagSet("cmdsample", flag.ExitOnError)
+}
+
+//ProvideConfig provides a config
+func ProvideConfig(flagset *flag.FlagSet) (Config, error) {
+	conf := Config{
+		App: app.RegisterConfig(flagset),
+		// endregion
+	}
+	// region CODE_REGION(COMMON_FLAGSET)
+	_ = flagset.String("config", "", "config file (optional)")
+	err := ff.Parse(flagset, os.Args[1:],
+		ff.WithConfigFileFlag("config"),
+		ff.WithAllowMissingConfigFile(true),
+		ff.WithIgnoreUndefined(true),
+		ff.WithConfigFileParser(fftoml.Parser),
+		ff.WithEnvVarPrefix("{{.PluginComponent.Spec.ToolName | ToLower}}"),
+	)
+	// endregion
+	return conf, err
+}

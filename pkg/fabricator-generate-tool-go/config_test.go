@@ -29,6 +29,67 @@ var _ = Describe("Config", func() {
 						PinDependency:     nil,
 						ReplaceDependency: nil,
 						ToolDependency:    nil,
+						ToolName:          "wombat",
+						Commands: []fabricatorgeneratetoolgo.Command{
+							{
+								Name: "test",
+								Flags: []fabricatorgeneratetoolgo.Flag{
+									{
+										Name:    "all",
+										Type:    "bool",
+										Default: "false",
+										Usage:   "set to true",
+									},
+									{
+										Name:    "num32",
+										Type:    "int",
+										Default: "-1",
+										Usage:   "int32 value",
+									},
+									{
+										Name:    "num64",
+										Type:    "int64",
+										Default: "-1",
+										Usage:   "int64 value",
+									},
+									{
+										Name:    "unum32",
+										Type:    "uint",
+										Default: "1",
+										Usage:   "uint32 value",
+									},
+									{
+										Name:    "unum64",
+										Type:    "uint64",
+										Default: "1",
+										Usage:   "uint64 value",
+									},
+									{
+										Name:    "str",
+										Type:    "string",
+										Default: `"default string"`,
+										Usage:   "a string",
+									},
+									{
+										Name:    "fl",
+										Type:    "float64",
+										Default: "1.02",
+										Usage:   "float64 value",
+									},
+								},
+							},
+							{
+								Name: "ls",
+								Flags: []fabricatorgeneratetoolgo.Flag{
+									{
+										Name:    "all",
+										Type:    "bool",
+										Default: "false",
+										Usage:   "set to true",
+									},
+								},
+							},
+						},
 					},
 				},
 			},

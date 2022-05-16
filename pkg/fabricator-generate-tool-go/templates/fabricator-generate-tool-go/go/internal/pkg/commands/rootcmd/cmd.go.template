@@ -1,0 +1,83 @@
+{{ CodeSectionFileHeader | ToGoComment }}
+
+package rootcmd
+
+import (
+// region CODE_REGION(COMMON_IMPORTS)
+	"context"
+	"flag"
+
+	"github.com/peterbourgon/ff/v3"
+	"github.com/peterbourgon/ff/v3/ffcli"
+	"code.cestus.io/libs/fftoml/pkg/fftoml"
+//endregion
+)
+
+// region CODE_REGION(COMMON_CONFIG)
+
+// Config for the root command, including flags and types that should be
+// available to each subcommand.
+type Config struct {
+	fs         *flag.FlagSet
+	configFile *string
+	options    []ff.Option
+//endregion
+}
+
+func (c *Config) ConfigFile() *string {
+	return c.configFile
+}
+
+// region CODE_REGION(COMMON_NEW)
+
+// New constructs a usable ffcli.Command and an empty RootConfig. The config's token
+// and verbose fields will be set after a successful parse. The caller must
+// initialize the config's object API client field.
+func New(cfg *Config) *ffcli.Command {
+
+	cmd := &ffcli.Command{
+		Name:       "{{.PluginComponent.Spec.ToolName | ToLower}}",
+		ShortUsage: "{{.PluginComponent.Spec.ToolName | ToLower}} [flags] <subcommand> [flags] [<arg>...]",
+		FlagSet:    cfg.fs,
+		Exec:       cfg.Exec,
+		Options:    cfg.options,
+	}
+//endregion
+	return cmd
+}
+
+// region CODE_REGION(IMPLEMENT)
+
+// RegisterFlags registers the flag fields into the provided flag.FlagSet. This
+// helper function allows subcommands to register the root flags into their
+// flagsets, creating "global" flags that can be passed after any subcommand at
+// the commandline.
+func (c *Config) RegisterFlags(fs *flag.FlagSet) {
+
+}
+
+// Exec function for this command.
+func (c *Config) Exec(context.Context, []string) error {
+	// The root command has no meaning, so if it gets executed,
+	// display the usage text to the user instead.
+	return flag.ErrHelp
+}
+
+// ProvideConfig profides a command configurartion
+func ProvideConfig() *Config {
+	cfg := Config{}
+	cfg.fs = flag.NewFlagSet("{{.PluginComponent.Spec.ToolName | ToLower}}", flag.ExitOnError)
+	cfg.configFile = cfg.fs.String("config", "./config.toml", "specifies the config file")
+	cfg.RegisterFlags(cfg.fs)
+	cfg.options = []ff.Option{
+		ff.WithConfigFileParser(fftoml.Parser),
+		ff.WithEnvVarPrefix("{{.PluginComponent.Spec.ToolName | ToLower}}"),
+		ff.WithConfigFileFlag("config"),
+		ff.WithIgnoreUndefined(true),
+		ff.WithAllowMissingConfigFile(true),
+//endregion
+	}
+	return &cfg
+}
+
+

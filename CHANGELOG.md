@@ -8,7 +8,13 @@ It assumes the use of [conventional commits](https://www.conventionalcommits.org
 ## [Unreleased]
 
 
-<a name="unreleased"></a>
-## unreleased
+<a name="v0.0.1"></a>
+## v0.0.1
+### Chores
+- generate plugin
 
-[Unreleased]: https://github.com/CestusIO/fabricator-generate-tool-go/compare/unreleased...HEAD
+### Features
+- add plugin logic
+
+
+[Unreleased]: https://github.com/CestusIO/fabricator-generate-tool-go/compare/v0.0.1...HEAD
