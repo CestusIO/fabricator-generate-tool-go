@@ -24,14 +24,10 @@ gomod:
     - GOPROXY=https://proxy.golang.org,direct
     - GOSUMDB=sum.golang.org
     - GOPRIVATE=code.cestus.io
+    - CGO_ENABLED=1
 archives:
   - format: zip
     name_template: "{{.Binary}}_{{.Os}}-{{.Arch}}"
-    replacements:
-      darwin: darwin
-      linux: linux
-      windows: windows
-      amd64: amd64
 checksum:
   name_template: "checksums.txt"
 snapshot:

@@ -18,7 +18,7 @@ import (
 	"code.cestus.io/tools/fabricator-generate-tool-go/pkg/fabricator-generate-tool-go/templates"
 )
 
-//PluginName is the name of the plugin
+// PluginName is the name of the plugin
 const PluginName string = "fabricator-generate-tool-go"
 
 // region CODE_REGION(OPTIONS)

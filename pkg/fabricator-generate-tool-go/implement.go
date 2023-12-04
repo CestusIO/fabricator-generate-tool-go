@@ -173,7 +173,7 @@ func (p *plugin) Generate(ctx context.Context, io fabricator.IOStreams, patterns
 			return fmt.Errorf("failed to run template generation commands for project: %s", err)
 		}
 	}
-	if err = executor.Run(ctx, "go", "mod", "tidy", "-compat=1.17"); err != nil {
+	if err = executor.Run(ctx, "go", "mod", "tidy"); err != nil {
 		fmt.Fprintf(io.Out, "go mod tidy failed: %s\n", err.Error())
 	}
 	// format files first so we dont run into generation failures

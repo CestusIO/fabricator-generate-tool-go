@@ -8,6 +8,12 @@ It assumes the use of [conventional commits](https://www.conventionalcommits.org
 ## [Unreleased]
 
 
+<a name="v0.1.0"></a>
+## [v0.1.0]
+### Features
+- regen to remove otel pin to 0.20
+
+
 <a name="v0.0.1"></a>
 ## v0.0.1
 ### Chores
@@ -17,4 +23,5 @@ It assumes the use of [conventional commits](https://www.conventionalcommits.org
 - add plugin logic
 
 
-[Unreleased]: https://github.com/CestusIO/fabricator-generate-tool-go/compare/v0.0.1...HEAD
+[Unreleased]: https://github.com/CestusIO/fabricator-generate-tool-go/compare/v0.1.0...HEAD
+[v0.1.0]: https://github.com/CestusIO/fabricator-generate-tool-go/compare/v0.0.1...v0.1.0
