@@ -2,11 +2,10 @@
 #
 # Modifications in code regions will be lost during regeneration!
 # region CODE_REGION(CI)
-name: ci-build_tag
+name: golang-vuln-check
 on:
-  push:
-    tags:
-      - "*"
+  pull_request:
+    branches: [main]
 permissions:
   contents: read
   pull-requests: write
@@ -14,7 +13,7 @@ permissions:
 jobs:
   build-go:
     name: Build
-    uses: CestusIO/actions/.github/workflows/golang-tag.yml@main
+    uses: CestusIO/actions/.github/workflows/golang-vuln-check.yml@main
     with:
       actions-ref: main
       #can be forced

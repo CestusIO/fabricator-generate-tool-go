@@ -6,10 +6,10 @@ name: golang-build-pr
 on:
   pull_request:
     branches: [main]
-
-env:
-  # Golang version to use across CI steps
-  GOLANG_VERSION: "1.18"
+permissions:
+  contents: read
+  pull-requests: write
+  packages: write
 
 jobs:
   build-go:
@@ -17,6 +17,8 @@ jobs:
     uses: CestusIO/actions/.github/workflows/golang-build-pr.yml@main
     with:
       actions-ref: main
+      #can be forced
+      #go-version: "~1.20"
     secrets:
       token: ${{ secrets.CI_TOKEN }}
   validate-pr:
