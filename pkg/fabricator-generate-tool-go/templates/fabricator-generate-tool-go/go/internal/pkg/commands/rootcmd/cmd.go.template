@@ -71,7 +71,7 @@ func ProvideConfig() *Config {
 	cfg.RegisterFlags(cfg.fs)
 	cfg.options = []ff.Option{
 		ff.WithConfigFileParser(fftoml.Parser),
-		ff.WithEnvVarPrefix("{{.PluginComponent.Spec.ToolName | ToLower}}"),
+		ff.WithEnvVarPrefix("{{.PluginComponent.Spec.ToolName | ToEnvVarName}}"),
 		ff.WithConfigFileFlag("config"),
 		ff.WithIgnoreUndefined(true),
 		ff.WithAllowMissingConfigFile(true),

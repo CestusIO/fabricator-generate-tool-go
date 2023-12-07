@@ -41,7 +41,7 @@ func ProvideConfig(flagset *flag.FlagSet) (Config, error) {
 		ff.WithAllowMissingConfigFile(true),
 		ff.WithIgnoreUndefined(true),
 		ff.WithConfigFileParser(fftoml.Parser),
-		ff.WithEnvVarPrefix("{{.PluginComponent.Spec.ToolName | ToLower}}"),
+		ff.WithEnvVarPrefix("{{.PluginComponent.Spec.ToolName | ToEnvVarName}}"),
 	)
 	// endregion
 	return conf, err
