@@ -7,22 +7,29 @@ package fabricatorgeneratetoolgo
 // region CODE_REGION(PINS)
 
 var DefaultPins PinDependencies = PinDependencies{
-	// "go.opentelemetry.io/otel": {
-	//	Name:    "go.opentelemetry.io/otel",
-	//	Version: "v0.20.0",
-	// },
+	// endregion
+	//
+	//	"go.opentelemetry.io/otel": {
+	//		Name:    "go.opentelemetry.io/otel",
+	//		Version: "v0.20.0",
+	//	},
 }
 
+// region CODE_REGION(replacements)
 var DefaultReplacements ReplaceDependencies = ReplaceDependencies{
-	// "github.com/onsi/ginkgo": {
-	// 	Name: "github.com/onsi/ginkgo",
-	// 	With: "github.com/magicmoose/ginkgo@v1.17.0",
-	// },
+	// endregion
+	//
+	//	"github.com/onsi/ginkgo": {
+	//		Name: "github.com/onsi/ginkgo",
+	//		With: "github.com/magicmoose/ginkgo@v1.17.0",
+	//	},
 }
 
+// region CODE_REGION(tooldeps)
 var DefaultToolDependencies ToolDependencies = ToolDependencies{
-	"github.com/onsi/ginkgo": {
-		Name: "github.com/onsi/ginkgo/ginkgo",
+	//endregion
+	"github.com/onsi/ginkgo/v2": {
+		Name: "github.com/onsi/ginkgo/v2/ginkgo",
 	},
 	"github.com/google/wire": {
 		Name: "github.com/google/wire",
