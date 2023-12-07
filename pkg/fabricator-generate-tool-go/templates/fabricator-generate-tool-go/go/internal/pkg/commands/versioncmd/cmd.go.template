@@ -54,7 +54,7 @@ func ProvideConfig(rootConfig *rootcmd.Config,
 		io:         io,
 		options: []ff.Option{
 			ff.WithConfigFileParser(fftoml.New(fftoml.WithTableSkip("version")).Parse),
-			ff.WithEnvVarPrefix("{{.PluginComponent.Spec.ToolName | ToLower}}_version"),
+			ff.WithEnvVarPrefix("{{.PluginComponent.Spec.ToolName | ToEnvVarName}}_version"),
 			ff.WithConfigFileVia(rootConfig.ConfigFile()),
 			ff.WithIgnoreUndefined(true),
 			ff.WithAllowMissingConfigFile(true),

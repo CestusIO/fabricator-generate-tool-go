@@ -41,7 +41,7 @@ func ProvideConfig(rootConfig *rootcmd.Config,
 		IO:         io,
 		Options: []ff.Option{
 			ff.WithConfigFileParser(fftoml.New(fftoml.WithTableSkip("{{.Command.Name | ToLower}}")).Parse),
-			ff.WithEnvVarPrefix("{{.PluginComponent.Spec.ToolName | ToLower}}_{{.Command.Name | ToLower}}"),
+			ff.WithEnvVarPrefix("{{.PluginComponent.Spec.ToolName | ToEnvVarName}}_{{.Command.Name | ToLower}}"),
 			ff.WithConfigFileVia(rootConfig.ConfigFile()),
 			ff.WithIgnoreUndefined(true),
 			ff.WithAllowMissingConfigFile(true),
