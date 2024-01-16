@@ -35,8 +35,15 @@ func ProvideConfig(flagset *flag.FlagSet) (Config, error) {
 		// endregion
 	}
 	// region CODE_REGION(COMMON_FLAGSET)
+	// filter only arguments starting with - 
+	var argList types.StringSlice
+	for _, arg := range os.Args {
+		if strings.HasPrefix(arg, "-") {
+			argList.Set(arg)
+		}
+	}
 	_ = flagset.String("config", "", "config file (optional)")
-	err := ff.Parse(flagset, os.Args[1:],
+	err := ff.Parse(flagset, argList,
 		ff.WithConfigFileFlag("config"),
 		ff.WithAllowMissingConfigFile(true),
 		ff.WithIgnoreUndefined(true),
