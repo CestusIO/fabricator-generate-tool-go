@@ -9,7 +9,8 @@ import (
 
 	"code.cestus.io/libs/buildinfo"
 	"github.com/go-logr/logr"
-	"github.com/peterbourgon/ff/v3/ffcli"
+	"github.com/peterbourgon/ff/v4"
+	"github.com/peterbourgon/ff/v4/ffhelp"
 	"go.uber.org/zap"
 
 	"{{.GoModule}}/internal/pkg/app"
@@ -20,6 +21,8 @@ import (
 	"{{$save.GoModule}}/internal/pkg/commands/{{$command.Name | ToGoPackageName}}cmd"
 	"{{$save.GoModule}}/internal/pkg/commands/{{$command.Name | ToGoPackageName}}cfg"
     {{end -}}
+
+	"code.cestus.io/libs/flags/pkg/flags"
 	//endregion
 )
 
@@ -42,6 +45,7 @@ func ProvideCommandsRunFunc(log logr.Logger,
     {{end -}}
 	// endregion
 
+	configFlags *flags.FlagSet,
 	// region CODE_REGION(COMMON_APPLICATION)
 ) CommandRunFunc {
 	return func() error {
@@ -55,7 +59,7 @@ func ProvideCommandsRunFunc(log logr.Logger,
 		)
 		//endregion
 	// region CODE_REGION(COMMON_REGISTER)
-		rootCommand.Subcommands = []*ffcli.Command{
+		rootCommand.Subcommands = []*ff.Command{
 			versionCommand,
 	{{ $save := . -}}
 	{{range $command :=.PluginComponent.Spec.Commands -}}
@@ -64,7 +68,9 @@ func ProvideCommandsRunFunc(log logr.Logger,
 //endregion
 		}
 	// region CODE_REGION(COMMON_RUN)
-		if err := rootCommand.Parse(os.Args[1:]); err != nil {
+		if err := rootCommand.Parse(os.Args[1:], rootconfig.Options()...); err != nil {
+			rootconfig.Fs.SetParent(configFlags)
+			fmt.Printf("\n%s\n", ffhelp.Command(rootCommand))
 			fmt.Fprintf(os.Stderr, "error during Parse: %v\n", err)
 			return err
 		}

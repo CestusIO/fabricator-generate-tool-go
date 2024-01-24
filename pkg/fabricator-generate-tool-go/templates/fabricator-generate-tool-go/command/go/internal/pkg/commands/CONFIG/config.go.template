@@ -7,8 +7,10 @@ import (
 	"flag"
 
 	"github.com/go-logr/logr"
-	"github.com/peterbourgon/ff/v3"
-	"code.cestus.io/libs/fftoml/pkg/fftoml"
+	"github.com/peterbourgon/ff/v4"
+	"github.com/peterbourgon/ff/v4/fftoml"
+
+	"code.cestus.io/libs/flags/pkg/flags"
 
 	"{{.GoModule}}/internal/pkg/commands/rootcmd"
 //endregion

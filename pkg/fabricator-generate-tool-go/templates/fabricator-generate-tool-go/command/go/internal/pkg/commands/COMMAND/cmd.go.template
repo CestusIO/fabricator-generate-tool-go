@@ -4,10 +4,9 @@ package {{.Command.Name | ToGoPackageName}}cmd
 
 import (
 // region CODE_REGION(COMMON_IMPORTS)
-	"context"
-	"github.com/peterbourgon/ff/v3/ffcli"
-
-	"code.cestus.io/libs/fftoml/pkg/fftoml"
+	"code.cestus.io/libs/flags/pkg/flags"
+	"github.com/peterbourgon/ff/v4"
+	"github.com/peterbourgon/ff/v4/fftoml"
 //endregion
 
 )
