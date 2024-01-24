@@ -4,12 +4,13 @@ package config
 
 import (
 // region CODE_REGION(COMMON_IMPORT)
-	"flag"
+	"errors"
 	"os"
 
-	"github.com/peterbourgon/ff/v3"
+	"github.com/peterbourgon/ff/v4"
+	"github.com/peterbourgon/ff/v4/fftoml"
 
-	"code.cestus.io/libs/fftoml/pkg/fftoml"
+	"code.cestus.io/libs/flags/pkg/flags"
 
 	"{{.GoModule}}/internal/pkg/app"
 //endregion
@@ -24,32 +25,38 @@ type Config struct {
 // region CODE_REGION(COMMON_PROVIDER)
 
 //ProvideFlagSet provides a flag set
-func ProvideFlagSet() *flag.FlagSet {
+func ProvideFlagSet() *flags.FlagSet {
 	return flag.NewFlagSet("cmdsample", flag.ExitOnError)
 }
 
 //ProvideConfig provides a config
-func ProvideConfig(flagset *flag.FlagSet) (Config, error) {
+func ProvideConfig(flagset *flags.FlagSet) (Config, error) {
 	conf := Config{
 		App: app.RegisterConfig(flagset),
 		// endregion
 	}
 	// region CODE_REGION(COMMON_FLAGSET)
-	// filter only arguments starting with - 
-	var argList types.StringSlice
-	for _, arg := range os.Args {
+	// skip until the first flag
+	args := os.Args
+	for len(args) > 0 {
+		arg := args[0]
 		if strings.HasPrefix(arg, "-") {
-			argList.Set(arg)
+			break
 		}
+		args = args[1:]
 	}
-	_ = flagset.String("config", "", "config file (optional)")
+	_ = flagset.String(0, "config", "", "config file (optional)")
 	err := ff.Parse(flagset, argList,
 		ff.WithConfigFileFlag("config"),
-		ff.WithAllowMissingConfigFile(true),
-		ff.WithIgnoreUndefined(true),
-		ff.WithConfigFileParser(fftoml.Parser),
+		ff.WithConfigAllowMissingFile(),
+		ff.WithConfigIgnoreUndefinedFlags(),
+		ff.WithConfigFileParser(fftoml.Parse),
 		ff.WithEnvVarPrefix("{{.PluginComponent.Spec.ToolName | ToEnvVarName}}"),
+		flagset.WithArgsIgnoreUndefinedFlags(),
 	)
+	if errors.Is(err, flags.ErrHelp) {
+		err = nil
+	}
 	// endregion
 	return conf, err
 }

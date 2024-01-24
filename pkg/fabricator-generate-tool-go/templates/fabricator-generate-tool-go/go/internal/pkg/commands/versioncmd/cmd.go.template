@@ -4,15 +4,13 @@ package versioncmd
 import (
 // region CODE_REGION(COMMON_IMPORTS)
 	"context"
-	"flag"
 	"fmt"
 
 	"code.cestus.io/libs/buildinfo"
 	"github.com/go-logr/logr"
-	"github.com/peterbourgon/ff/v3"
-	"github.com/peterbourgon/ff/v3/ffcli"
+	"github.com/peterbourgon/ff/v4"
 
-	"code.cestus.io/libs/fftoml/pkg/fftoml"
+	"code.cestus.io/libs/flags/pkg/flags"
 
 	"{{.GoModule}}/internal/pkg/commands/rootcmd"
 //endregion
@@ -21,21 +19,20 @@ import (
 // region CODE_REGION(CONFIG)
 type Config struct {
 	rootConfig *rootcmd.Config
-	fs         *flag.FlagSet
+	fs         *flags.FlagSet
 	log        logr.Logger
 	io         rootcmd.IOStreams
-	options    []ff.Option
-	buildinfo buildinfo.BuildInfo
+	buildinfo  buildinfo.BuildInfo
 	//endregion
 }
 
 // region CODE_REGION(IMPLEMENT)
 
-// New returns a  ffcli.Command for the version subcommand.
-func New(conf *Config) *ffcli.Command {
-	return &ffcli.Command{
+// New returns a  ff.Command for the version subcommand.
+func New(conf *Config) *ff.Command {
+	return &ff.Command{
 		Name:       "version",
-		ShortUsage: "{{.PluginComponent.Spec.ToolName | ToLower}} version [flags] ",
+		Usage: "{{.PluginComponent.Spec.ToolName | ToLower}} version [flags] ",
 		ShortHelp:  "version",
 		FlagSet:    conf.fs,
 		Exec:       conf.CmdRunFunc(),
@@ -52,15 +49,8 @@ func ProvideConfig(rootConfig *rootcmd.Config,
 		rootConfig: rootConfig,
 		log:        log,
 		io:         io,
-		options: []ff.Option{
-			ff.WithConfigFileParser(fftoml.New(fftoml.WithTableSkip("version")).Parse),
-			ff.WithEnvVarPrefix("{{.PluginComponent.Spec.ToolName | ToEnvVarName}}_version"),
-			ff.WithConfigFileVia(rootConfig.ConfigFile()),
-			ff.WithIgnoreUndefined(true),
-			ff.WithAllowMissingConfigFile(true),
-		},
 	}
-	cfg.fs = flag.NewFlagSet("{{.PluginComponent.Spec.ToolName | ToLower}} version", flag.ExitOnError)
+	cfg.fs = flags.NewFlagSet("{{.PluginComponent.Spec.ToolName | ToLower}} version")
 	cfg.buildinfo = buildinfo
 	rootConfig.RegisterFlags(cfg.fs)
 	return &cfg
