@@ -32,7 +32,7 @@ func (c *Config) Options() []ff.Option {
 
 // region CODE_REGION(COMMON_NEW)
 
-// New constructs a usable ffcli.Command and an empty RootConfig. The config's token
+// New constructs a usable ff.Command and an empty RootConfig. The config's token
 // and verbose fields will be set after a successful parse. The caller must
 // initialize the config's object API client field.
 func New(cfg *Config) *ff.Command {
