@@ -26,7 +26,7 @@ type Config struct {
 
 //ProvideFlagSet provides a flag set
 func ProvideFlagSet() *flags.FlagSet {
-	return flag.NewFlagSet("cmdsample", flag.ExitOnError)
+	return flags.NewFlagSet("cmdsample")
 }
 
 //ProvideConfig provides a config
@@ -46,7 +46,7 @@ func ProvideConfig(flagset *flags.FlagSet) (Config, error) {
 		args = args[1:]
 	}
 	_ = flagset.String(0, "config", "", "config file (optional)")
-	err := ff.Parse(flagset, argList,
+	err := ff.Parse(flagset, args,
 		ff.WithConfigFileFlag("config"),
 		ff.WithConfigAllowMissingFile(),
 		ff.WithConfigIgnoreUndefinedFlags(),

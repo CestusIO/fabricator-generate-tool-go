@@ -68,8 +68,8 @@ func (c *Config) Exec(context.Context, []string) error {
 func ProvideConfig() *Config {
 	cfg := Config{}
 	cfg.Fs = flags.NewFlagSet("{{.PluginComponent.Spec.ToolName | ToLower}}")
-	cfg.configFile = cfg.fs.String(0, "config", "./config.toml", "specifies the config file")
-	cfg.RegisterFlags(cfg.fs)
+	cfg.configFile = cfg.Fs.String(0, "config", "./config.toml", "specifies the config file")
+	cfg.RegisterFlags(cfg.Fs)
 	cfg.options = []ff.Option{
 		ff.WithConfigFileParser(fftoml.Parse),
 		ff.WithEnvVarPrefix("{{.PluginComponent.Spec.ToolName | ToEnvVarName}}"),

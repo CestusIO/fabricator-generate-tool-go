@@ -4,8 +4,6 @@ package {{.Command.Name | ToGoPackageName}}cfg
 
 import (
 // region CODE_REGION(COMMON_IMPORTS)
-	"flag"
-
 	"github.com/go-logr/logr"
 	"github.com/peterbourgon/ff/v4"
 	"github.com/peterbourgon/ff/v4/fftoml"
@@ -20,7 +18,7 @@ import (
 // region CODE_REGION(CONFIG)
 type Config struct {
 	RootConfig *rootcmd.Config
-	FS         *flag.FlagSet
+	FS         *flags.FlagSet
 	Log        logr.Logger
 	IO         rootcmd.IOStreams
 	Options    []ff.Option
@@ -37,22 +35,27 @@ func ProvideConfig(rootConfig *rootcmd.Config,
 	//endregion
 	// region CODE_REGION(COMMON_RET_CONFIG)
 ) *Config {
+	fs := flags.NewFlagSet("{{.PluginComponent.Spec.ToolName | ToLower}} {{.Command.Name | ToLower}}") 
 	cfg := Config{
 		RootConfig: rootConfig,
 		Log:        log,
 		IO:         io,
 		Options: []ff.Option{
-			ff.WithConfigFileParser(fftoml.New(fftoml.WithTableSkip("{{.Command.Name | ToLower}}")).Parse),
-			ff.WithEnvVarPrefix("{{.PluginComponent.Spec.ToolName | ToEnvVarName}}_{{.Command.Name | ToLower}}"),
-			ff.WithConfigFileVia(rootConfig.ConfigFile()),
-			ff.WithIgnoreUndefined(true),
-			ff.WithAllowMissingConfigFile(true),
+			ff.WithConfigFileParser(fftoml.Parse),
+			ff.WithEnvVarPrefix("{{.PluginComponent.Spec.ToolName | ToEnvVarName}}_{{.Command.Name | ToEnvVarName}}"),
+			ff.WithConfigFile(*rootConfig.ConfigFile()),
+			ff.WithConfigAllowMissingFile(),
+			fs.WithArgsIgnoreUndefinedFlags(),
 		},
 	}
-	cfg.FS = flag.NewFlagSet("{{.PluginComponent.Spec.ToolName | ToLower}} {{.Command.Name | ToLower}}", flag.ExitOnError)
+	cfg.FS = fs
 
 	{{range $flag :=.Command.Flags -}}
-		cfg.FS.{{$flag.Type | ToHumanNameTitle}}Var(&cfg.{{$flag.Name | ToGoName}}, "{{$flag.Name | ToVarName}}", {{$flag.Default}}, "{{$flag.Usage}}")
+	   {{ if eq $flag.Type "bool" }}
+	    cfg.FS.{{$flag.Type | ToHumanNameTitle}}VarDefault(&cfg.{{$flag.Name | ToGoName}},0 , "{{$flag.Name | ToVarName}}", {{$flag.Default}}, "{{$flag.Usage}}")
+	   {{else}}
+		cfg.FS.{{$flag.Type | ToHumanNameTitle}}Var(&cfg.{{$flag.Name | ToGoName}},0 , "{{$flag.Name | ToVarName}}", {{$flag.Default}}, "{{$flag.Usage}}")
+	   {{end}}
 	{{end -}}
 
 	//endregion

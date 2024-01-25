@@ -34,7 +34,7 @@ func New(conf *Config) *ff.Command {
 		Name:       "version",
 		Usage: "{{.PluginComponent.Spec.ToolName | ToLower}} version [flags] ",
 		ShortHelp:  "version",
-		FlagSet:    conf.fs,
+		Flags:    conf.fs,
 		Exec:       conf.CmdRunFunc(),
 	}
 }

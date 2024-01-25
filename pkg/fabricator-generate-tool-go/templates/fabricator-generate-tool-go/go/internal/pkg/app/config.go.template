@@ -3,7 +3,7 @@
 package app
 
 import (
-	"flag"
+	"code.cestus.io/libs/flags/pkg/flags"
 )
 
 type Config struct {
@@ -13,10 +13,10 @@ type Config struct {
 }
 
 //RegisterConfig registgers a config with a flagset
-func RegisterConfig(flagset *flag.FlagSet) *Config {
+func RegisterConfig(flagset *flags.FlagSet) *Config {
 // region CODE_REGION(COMMON_REGISTER)
 	conf := Config{}
-	flagset.StringVar(&conf.LogLevel, "app.loglevel", "info", "Loglevel error, warn,info, debug1..10")
+	flagset.StringVar(&conf.LogLevel, 0, "app.loglevel", "info", "Loglevel error, warn,info, debug1..10")
 // endregion
 	return &conf
 }
