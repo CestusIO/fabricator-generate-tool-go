@@ -8,6 +8,12 @@ It assumes the use of [conventional commits](https://www.conventionalcommits.org
 ## [Unreleased]
 
 
+<a name="v0.3.4"></a>
+## [v0.3.4]
+### Bug Fixes
+- better handling of cmdline help requests
+
+
 <a name="v0.3.3"></a>
 ## [v0.3.3]
 ### Features
@@ -65,7 +71,8 @@ It assumes the use of [conventional commits](https://www.conventionalcommits.org
 - add plugin logic
 
 
-[Unreleased]: https://github.com/CestusIO/fabricator-generate-tool-go/compare/v0.3.3...HEAD
+[Unreleased]: https://github.com/CestusIO/fabricator-generate-tool-go/compare/v0.3.4...HEAD
+[v0.3.4]: https://github.com/CestusIO/fabricator-generate-tool-go/compare/v0.3.3...v0.3.4
 [v0.3.3]: https://github.com/CestusIO/fabricator-generate-tool-go/compare/v0.3.2...v0.3.3
 [v0.3.2]: https://github.com/CestusIO/fabricator-generate-tool-go/compare/v0.3.1...v0.3.2
 [v0.3.1]: https://github.com/CestusIO/fabricator-generate-tool-go/compare/v0.3.0...v0.3.1

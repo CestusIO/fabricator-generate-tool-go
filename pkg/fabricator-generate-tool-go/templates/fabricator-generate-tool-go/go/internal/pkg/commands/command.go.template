@@ -69,13 +69,21 @@ func ProvideCommandsRunFunc(log logr.Logger,
 		}
 	// region CODE_REGION(COMMON_RUN)
 		if err := rootCommand.Parse(os.Args[1:], rootconfig.Options()...); err != nil {
-			rootconfig.Fs.SetParent(configFlags)
-			fmt.Printf("\n%s\n", ffhelp.Command(rootCommand))
-			fmt.Fprintf(os.Stderr, "error during Parse: %v\n", err)
+			if errors.Is(err, flags.ErrHelp) {
+				rootconfig.Fs.SetParent(configFlags)
+				fmt.Printf("\n%s\n", ffhelp.Command(rootCommand))
+			} else {
+				fmt.Fprintf(os.Stderr, "error during Parse: %v\n", err)
+			}
 			return err
 		}
 		if err := rootCommand.Run(context.Background()); err != nil {
-			fmt.Fprintf(os.Stderr, "%v\n", err)
+			if errors.Is(err, flags.ErrHelp) {
+				rootconfig.Fs.SetParent(configFlags)
+				fmt.Printf("\n%s\n", ffhelp.Command(rootCommand))
+			} else {
+				fmt.Fprintf(os.Stderr, "error during Parse: %v\n", err)
+			}
 			return err
 		}
 //endregion
