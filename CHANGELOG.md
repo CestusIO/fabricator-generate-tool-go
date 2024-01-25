@@ -8,10 +8,34 @@ It assumes the use of [conventional commits](https://www.conventionalcommits.org
 ## [Unreleased]
 
 
+<a name="v0.3.2"></a>
+## [v0.3.2]
+### Bug Fixes
+- update generation
+
+
+<a name="v0.3.1"></a>
+## [v0.3.1]
+### Bug Fixes
+- remove reference to ffcli
+
+
+<a name="v0.3.0"></a>
+## [v0.3.0]
+### Features
+- switch to flags package
+
+
+<a name="v0.2.0"></a>
+## [v0.2.0]
+### Features
+- only parse config values starting with - from commandline
+
+
 <a name="v0.1.2"></a>
 ## [v0.1.2]
 ### Bug Fixes
-- use ToEnvVarName for all env var generation
+- use ToEnvVarName for all env var generations
 
 
 <a name="v0.1.1"></a>
@@ -35,7 +59,11 @@ It assumes the use of [conventional commits](https://www.conventionalcommits.org
 - add plugin logic
 
 
-[Unreleased]: https://github.com/CestusIO/fabricator-generate-tool-go/compare/v0.1.2...HEAD
+[Unreleased]: https://github.com/CestusIO/fabricator-generate-tool-go/compare/v0.3.2...HEAD
+[v0.3.2]: https://github.com/CestusIO/fabricator-generate-tool-go/compare/v0.3.1...v0.3.2
+[v0.3.1]: https://github.com/CestusIO/fabricator-generate-tool-go/compare/v0.3.0...v0.3.1
+[v0.3.0]: https://github.com/CestusIO/fabricator-generate-tool-go/compare/v0.2.0...v0.3.0
+[v0.2.0]: https://github.com/CestusIO/fabricator-generate-tool-go/compare/v0.1.2...v0.2.0
 [v0.1.2]: https://github.com/CestusIO/fabricator-generate-tool-go/compare/v0.1.1...v0.1.2
 [v0.1.1]: https://github.com/CestusIO/fabricator-generate-tool-go/compare/v0.1.0...v0.1.1
 [v0.1.0]: https://github.com/CestusIO/fabricator-generate-tool-go/compare/v0.0.1...v0.1.0
