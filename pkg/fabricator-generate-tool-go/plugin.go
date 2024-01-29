@@ -117,4 +117,5 @@ func NewFabricatorGenerateToolGo(ioStreams fabricator.IOStreams, flagparser fabr
 type Generator interface {
 	Root() string
 	Generate(ctx context.Context, io fabricator.IOStreams, patterns ...string) (err error)
+	RunPostGeneration(ctx context.Context, io fabricator.IOStreams, genCmds ...[]string) error
 }

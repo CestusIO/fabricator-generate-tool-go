@@ -8,6 +8,9 @@ It assumes the use of [conventional commits](https://www.conventionalcommits.org
 ## [Unreleased]
 
 
+<a name="unreleased"></a>
+## [unreleased]
+
 <a name="v0.3.4"></a>
 ## [v0.3.4]
 ### Bug Fixes
@@ -71,7 +74,8 @@ It assumes the use of [conventional commits](https://www.conventionalcommits.org
 - add plugin logic
 
 
-[Unreleased]: https://github.com/CestusIO/fabricator-generate-tool-go/compare/v0.3.4...HEAD
+[Unreleased]: https://github.com/CestusIO/fabricator-generate-tool-go/compare/unreleased...HEAD
+[unreleased]: https://github.com/CestusIO/fabricator-generate-tool-go/compare/v0.3.4...unreleased
 [v0.3.4]: https://github.com/CestusIO/fabricator-generate-tool-go/compare/v0.3.3...v0.3.4
 [v0.3.3]: https://github.com/CestusIO/fabricator-generate-tool-go/compare/v0.3.2...v0.3.3
 [v0.3.2]: https://github.com/CestusIO/fabricator-generate-tool-go/compare/v0.3.1...v0.3.2
