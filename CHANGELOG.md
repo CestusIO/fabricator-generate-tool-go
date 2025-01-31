@@ -8,8 +8,17 @@ It assumes the use of [conventional commits](https://www.conventionalcommits.org
 ## [Unreleased]
 
 
-<a name="unreleased"></a>
-## [unreleased]
+<a name="v0.5.0"></a>
+## [v0.5.0]
+### Chores
+- version update
+
+
+<a name="v0.4.0"></a>
+## [v0.4.0]
+### Features
+- add compile step to generate test
+
 
 <a name="v0.3.4"></a>
 ## [v0.3.4]
@@ -74,8 +83,9 @@ It assumes the use of [conventional commits](https://www.conventionalcommits.org
 - add plugin logic
 
 
-[Unreleased]: https://github.com/CestusIO/fabricator-generate-tool-go/compare/unreleased...HEAD
-[unreleased]: https://github.com/CestusIO/fabricator-generate-tool-go/compare/v0.3.4...unreleased
+[Unreleased]: https://github.com/CestusIO/fabricator-generate-tool-go/compare/v0.5.0...HEAD
+[v0.5.0]: https://github.com/CestusIO/fabricator-generate-tool-go/compare/v0.4.0...v0.5.0
+[v0.4.0]: https://github.com/CestusIO/fabricator-generate-tool-go/compare/v0.3.4...v0.4.0
 [v0.3.4]: https://github.com/CestusIO/fabricator-generate-tool-go/compare/v0.3.3...v0.3.4
 [v0.3.3]: https://github.com/CestusIO/fabricator-generate-tool-go/compare/v0.3.2...v0.3.3
 [v0.3.2]: https://github.com/CestusIO/fabricator-generate-tool-go/compare/v0.3.1...v0.3.2
